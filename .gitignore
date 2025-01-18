@@ -1,0 +1,32 @@
+# IntelliJ IDEA specific files
+.idea/
+*.iml
+
+# Build output directories
+/target/
+/out/
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Maven specific files
+.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+
+# Class files
+*.class
+
+# Compiled files
+*.war
+*.ear
+
+# Coverage reports
+/site/
+
+# Other generated files
+*.swp
