@@ -1,49 +1,23 @@
 package org.example;
 
 import org.matheclipse.core.expression.F;
-import java.util.Arrays;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 public class QuantumRegister {
     public int length;
+
     public QuantumState[] states;
 
     public QuantumRegister(int _length) {
-        this(_length, 0);
-    }
-
-    public QuantumRegister(int _length, int _initial_state) {
         length = _length;
         states = new QuantumState[1 << _length];
         Arrays.fill(states, null);
 
-        if (_initial_state != -1) {
-            states[_initial_state] = new QuantumState(length, _initial_state, F.CC(1, 0));
-        }
-    }
-
-    public QuantumRegister unite(QuantumRegister oth) {
-        QuantumRegister new_reg = new QuantumRegister(this.length + oth.length, -1);
-
-        for (QuantumState qs1 : this.states) {
-            if (qs1 == null || qs1.isZero()) {
-                continue;
-            }
-
-            for (QuantumState qs2: oth.states) {
-                if (qs2 == null || qs2.isZero()) {
-                    continue;
-                }
-
-                int q = (qs1.state << qs2.length) + qs1.state;
-                new_reg.states[q] = new QuantumState(
-                        new_reg.length,
-                        q,
-                        F.Times(qs1.coefficient, qs2.coefficient)
-                );
-            }
-        }
-        return new_reg;
+        states[0] = new QuantumState(length, 0, F.CC(1, 0));
     }
 
     @Override
