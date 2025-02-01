@@ -9,7 +9,7 @@ import org.matheclipse.core.interfaces.IExpr;
 import java.util.Arrays;
 
 
-public class Measurement {
+public class Measurement extends QuantumGate {
     private static int getRandomState(IExpr[] probabilities) {
         IExpr x = F.eval(String.valueOf(Math.random()));
 
@@ -37,7 +37,7 @@ public class Measurement {
         return true;
     }
 
-    public static void apply(QuantumRegister reg, int... target_qubits) {
+    public void apply(QuantumRegister reg, int... target_qubits) {
         IExpr[] probabilities = new IExpr[1 << target_qubits.length];
         Arrays.fill(probabilities, F.ZZ(0));
 
@@ -84,5 +84,10 @@ public class Measurement {
                 reg.states[qi] = null;
             }
         }
+    }
+
+    @Override
+    public void apply(QuantumRegister reg, int[] target_qubits, int[] args) {
+        apply(reg, target_qubits);
     }
 }

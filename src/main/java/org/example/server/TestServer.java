@@ -45,6 +45,25 @@ public class TestServer {
             }
         });
 
+        server.createContext("/qgantt", exchange -> {
+            String response = Files.readString(Path.of("src/main/java/org/example/qgantt/test_html.html"));
+            exchange.sendResponseHeaders(200, response.getBytes().length);
+            OutputStream os = exchange.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+        });
+
+        server.createContext("/qgantt/qgantt.js", exchange -> {
+            String response = Files.readString(Path.of("src/main/java/org/example/qgantt/qgantt.js"));
+            exchange.sendResponseHeaders(200, response.getBytes().length);
+            exchange.getResponseHeaders().set("Content-Type", "application/javascript");
+            OutputStream os = exchange.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+        });
+
+
+
         // Start the server
         server.setExecutor(null); // Use the default executor
         server.start();

@@ -2,12 +2,8 @@ package org.example;
 
 import org.matheclipse.core.expression.F;
 import org.matheclipse.core.interfaces.IExpr;
-import org.matheclipse.parser.client.Console;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 public class QuantumState {
     public int length;

@@ -7,8 +7,8 @@ import org.matheclipse.core.interfaces.IExpr;
 
 import java.util.Arrays;
 
-public abstract class QunatumGate {
-    protected static void apply(int gate_length, IExpr matrix, QuantumRegister reg, int[] target_qubits) {
+public abstract class MatrixGate extends QuantumGate {
+    protected void apply(int gate_length, IExpr matrix, QuantumRegister reg, int[] target_qubits) {
         assert target_qubits.length == gate_length;
 
         QuantumState[] result_states = new QuantumState[1 << reg.length];
@@ -63,7 +63,7 @@ public abstract class QunatumGate {
 
         reg.states = result_states;
 
-        reg.print();
+        // reg.print();
     }
 
 

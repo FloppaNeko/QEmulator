@@ -48,9 +48,10 @@ public class QuantumRegister {
 
     @Override
     public String toString() {
-        return String.join(" \\ ", Arrays.stream(states).map((s) -> {
+        return String.join(" ", Arrays.stream(states).map((s) -> {
             if (s == null) {
-                return "\\text{null}";
+                //return "\\text{null}";
+                return "";
             } else {
                 return s.toString();
             }
