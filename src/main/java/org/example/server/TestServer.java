@@ -62,6 +62,14 @@ public class TestServer {
             os.close();
         });
 
+        server.createContext("/qgantt/test.json", exchange -> {
+            String response = Files.readString(Path.of("src/main/java/org/example/qgantt/test.json"));
+            exchange.sendResponseHeaders(200, response.getBytes().length);
+            OutputStream os = exchange.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+        });
+
 
 
         // Start the server

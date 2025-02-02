@@ -1,0 +1,17 @@
+{
+  "title" : "title",
+  "rows" : 1,
+  "columns" : 1,
+  "terms": [
+    {
+      "row" : 0,
+      "col" : 0,
+      "amp": "\\frac{1}{\\sqrt{8}}",
+      "kets" : [
+        {
+          "value" : "\\text{NA}"
+        }
+      ]
+    }
+  ]
+}
