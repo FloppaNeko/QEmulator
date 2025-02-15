@@ -1,17 +1,95 @@
-function printTable(text) {
-    let json = JSON.parse(text);
-    
+function setupTable(rows, columns, term_lengths) {
     let table = document.createElement('table');
     table.id = "root_table";
 
-    for (let i = 0; i < json.rows + 1; ++i) {
-        let row = table.insertRow();
-        for (let j = 0; j < json.columns + 1; ++j) {
-            row.insertCell();
+    let top_row = table.insertRow();
+    top_row.id = "top_row";
+
+    let title_cell = top_row.insertCell();
+    title_cell.id = "title_cell";
+
+    let arrow_cells_width = 0;
+    for (let i = 0; i < columns; ++i) {
+        if (i > 0) {
+            top_row.insertCell();
+        }
+
+        let number_cell = top_row.insertCell();
+        number_cell.setAttribute("colspan", 3 * term_lengths[i] + 1);
+        number_cell.innerHTML = `$ ${i+1} $`;
+    }
+
+    let operation_row = table.insertRow();
+    operation_row.className = "operations_row";
+
+    operation_row.insertCell();
+
+    for (let i = 0; i < columns; ++i) {
+        if (i > 0) {
+            operation_row.insertCell();
+        }
+
+        let operation_cell = operation_row.insertCell();
+        operation_cell.className = "operation_cell";
+        operation_cell.id = `operation_cell_${i}`; 
+    }
+
+    for (let i = 0; i < rows; ++i) {
+        let terms_row = table.insertRow();
+        terms_row.className = "terms_row";
+
+        let row_number_cell = terms_row.insertCell();
+        row_number_cell.innerHTML = `$\\texttt{${i+1}}$`;
+
+        for (let j = 0; j < columns; ++j) {
+            if (i == 0 && j > 0) {
+                let arrow_block = terms_row.insertCell();
+                arrow_block.className = "arrow_block";
+                arrow_block.id = `arrow_block_${j-1}`;
+                arrow_block.setAttribute("rowspan", rows);
+                arrow_cells_width += 1;
+            }
+
+            let amp_cell = terms_row.insertCell();
+            amp_cell.id = `cell_${i}_${j}_amp`;
+            arrow_cells_width += 1;
+
+            for (let k = 0; k < term_lengths[j]; ++k) {
+                let bra_cell = terms_row.insertCell();
+                bra_cell.innerHTML = "$|$";
+
+                let terms_cell = terms_row.insertCell();
+                terms_cell.id = `cell_${i}_${j}_${k}`;
+
+                let ket_cell = terms_row.insertCell();
+                ket_cell.innerHTML = "$\\rangle$";
+
+                if (i == 0) {
+                    arrow_cells_width += 3;
+                }
+            }
         }
     }
 
-    table.rows[0].cells[0].innerHTML = "$\\text{" + json.title + "}$";
+    let time_row = table.insertRow();
+    
+    let time_cell = time_row.insertCell();
+    time_cell.innerHTML = "$\\text{time}$";
+
+    let time_arrow_cell = time_row.insertCell();
+    time_arrow_cell.setAttribute("colspan", arrow_cells_width);
+    time_arrow_cell.id = "time_arrow_cell";
+
+    return table;
+}
+
+
+function printTable(text) {
+    let json = JSON.parse(text);
+    
+    let table = setupTable(json.rows, json.columns, json.term_lengths);
+
+    table.querySelector("#title_cell").innerHTML = `$\\text{${json.title}}$`;
 
     let terms = json.terms;
     for (let term of terms) {
@@ -19,30 +97,100 @@ function printTable(text) {
         let col = term.col;
 
         let amp = term.amp;
-        let len = term.kets.length;
 
-        let term_table = document.createElement('table');
-        term_table.insertRow();
+        let amp_cell = table.querySelector(`#cell_${row}_${col}_amp`);
+        amp_cell.innerHTML = `$ ${amp} $`;
 
-        let cell = term_table.rows[0].insertCell();
-        cell.innerHTML = "$$" + amp + "$$";
-        alert(cell.innerHTML);
+        // let cell = table.querySelector(`#cell_${row}_${col}`)
+
+        // let cell_text = "";
+        // cell_text += amp.replace("\\frac", "\\tfrac");
         for (let i = 0; i <  term.kets.length; ++i) {
-            cell = term_table.rows[0].insertCell();
+            let ket = term.kets[i];
 
-            cell.innerHTML = "$$ |" + term.kets[i].value + "\\rangle $$";
+            let ket_text = ket.value;
+
+            let overset = false;
+            if ("title" in ket) {
+                let ket_title = ket.title;
+
+                if ("title_style" in ket) {
+                    if (ket.title_style == "bold") {
+                        ket_title = `\\textbf{${ket_title}}`;
+                    } else if (ket.title_style == "italic") {
+                        ket_title = `\\textit{${ket_title}}`;
+                    }
+                } else {
+                    ket_title = `\\text{${ket_title}}`;
+                }
+
+                ket_text = `\\overset{${ket_title}}{${ket_text}}`;
+                overset = true;
+            }
+
+            let val_cell = table.querySelector(`#cell_${row}_${col}_${i}`);
+            val_cell.innerHTML = `$ ${ket_text} $`;
+            if (overset) {
+                val_cell.classList.add("overset");
+            }
         }
 
-        table.rows[row+1].cells[col+1].append(term_table);
     }
 
     document.body.append(table);
-    MathJax.typeset();
+}
+
+function drawArrows(text) {
+    const cell_height = 50;
+    const cell_offset = 30;
+
+    let json = JSON.parse(text);
+    let arrows = json.arrows;
+
+    for (let i = 0; i < arrows.length; ++i) {
+        let script_text = "\\begin{tikzpicture}\n";
+
+        for (let [s, e] of arrows[i]) {
+            let begin_y = s * cell_height + cell_offset;
+            let end_y = e * cell_height + cell_offset;
+
+            script_text += `\\draw [thick, dotted, ->] (0pt, ${begin_y}pt) -- (30pt, ${end_y}pt);\n`;
+        }
+
+        script_text += "\\end{tikzpicture}";
+
+        let arrow_block = document.querySelector(`#arrow_block_${i}`);
+
+        let arrow_block_script = document.createElement("script");
+        arrow_block_script.setAttribute("type", "text/tikz");
+        arrow_block_script.innerHTML = script_text;
+        arrow_block.append(arrow_block_script);
+        //process_tikz(arrow_block_script);
+    }
+
+    let time_arrow_cell = document.querySelector("#time_arrow_cell");
+
+    let time_arrow_script = document.createElement("script");
+    time_arrow_script.setAttribute("type", "text/tikz");
+    let width = Math.floor(time_arrow_cell.offsetWidth * 0.75);
+    time_arrow_script.innerHTML = `
+        \\begin{tikzpicture}
+        \\draw [thick, dotted, ->] (0pt, 5pt) -- (${width}pt, 5pt);
+        \\end{tikzpicture}
+    `;
+    time_arrow_cell.append(time_arrow_script);
+    //process_tikz(time_arrow_script);
+
 }
 
 fetch("/qgantt/test.json")
     .then(response => response.text())
     .then(text => {
         printTable(text);
+        return text;
     })
-    .catch(error => console.error('Error loading JSON:', error));
+    .then(text => {
+        MathJax.typeset();
+        return text;
+    })
+    .then((text) => drawArrows(text));

@@ -1,17 +1,42 @@
 {
-  "title" : "title",
-  "rows" : 1,
-  "columns" : 1,
-  "terms": [
-    {
-      "row" : 0,
-      "col" : 0,
-      "amp": "\\frac{1}{\\sqrt{8}}",
-      "kets" : [
+    "title": "qgantt",
+    "rows": 1,
+    "columns": 2,
+    "term_lengths" : [3, 2],
+    "terms": [
         {
-          "value" : "\\text{NA}"
+            "row": 0,
+            "col": 0,
+            "amp": "\\frac{\\sqrt{7}}{\\sqrt{8}}",
+            "kets": [
+                {
+                    "value": "\\texttt{NA}",
+                    "title": "lat"
+                },
+                {
+                    "value": "\\texttt{NA}",
+                    "title": "lon"
+                },
+                {
+                    "value": "\\texttt{NA}",
+                    "title": "B",
+                    "title_style": "bold"
+                }
+            ]
+        },
+        {
+            "row": 0,
+            "col": 1,
+            "amp": "\\frac{\\sqrt{7}}{\\sqrt{8}}",
+            "kets": [
+                {
+                    "value": "3"
+                },
+                {
+                    "value": "1"
+                }
+            ]
         }
-      ]
-    }
-  ]
+    ],
+    "arrows": [[[0, 0]]]
 }

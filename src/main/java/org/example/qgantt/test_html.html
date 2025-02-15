@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>QGantt Chart Test</title>
-    <script src="/qgantt/qgantt.js"></script>
     <script type="text/javascript" id="MathJax-script" async
             src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+    <script type="text/javascript" async
+            src="/qgantt/tikzjax.js">
     </script>
     <script>
         MathJax = {
@@ -17,6 +19,27 @@
             }
         };
     </script>
+    <script src="/qgantt/qgantt.js"></script>
+    <style>
+        #root_table td {
+            text-align: center;
+            padding: 0;
+        }
+
+        #root_table .overset {
+            position: relative;
+            top: -4px; /* Moves text upward */
+            height: 40pt;
+        }
+    </style>
+    <style>
+        #root_table td.arrow_block {
+            width: 30pt;
+            position: relative;
+            top: 1pt; /* Moves text upward */
+            
+        }
+    </style>
 </head>
 <body>
 <h1>QGantt Chart Test</h1>
