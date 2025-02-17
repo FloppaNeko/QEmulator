@@ -1,8 +1,18 @@
 {
     "title": "qgantt",
-    "rows": 1,
+    "rows": 2,
     "columns": 2,
     "term_lengths" : [3, 2],
+    "operations" : [
+        {
+            "col" : 0,
+            "text" : "\\texttt{op} \\ 1"
+        },
+        {
+            "col" : 1,
+            "text" : "\\texttt{op} \\ 2"
+        }
+    ],
     "terms": [
         {
             "row": 0,
@@ -27,7 +37,20 @@
         {
             "row": 0,
             "col": 1,
-            "amp": "\\frac{\\sqrt{7}}{\\sqrt{8}}",
+            "amp": "\\frac{1}{2}",
+            "kets": [
+                {
+                    "value": "3"
+                },
+                {
+                    "value": "1"
+                }
+            ]
+        },
+        {
+            "row": 1,
+            "col": 1,
+            "amp": "\\frac{1}{\\sqrt{8}}",
             "kets": [
                 {
                     "value": "3"
@@ -38,5 +61,5 @@
             ]
         }
     ],
-    "arrows": [[[0, 0]]]
+    "arrows": [[[0, 0], [0, 1]]]
 }

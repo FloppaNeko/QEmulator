@@ -31,6 +31,7 @@ function setupTable(rows, columns, term_lengths) {
 
         let operation_cell = operation_row.insertCell();
         operation_cell.className = "operation_cell";
+        operation_cell.setAttribute("colspan", 3 * term_lengths[i] + 1);
         operation_cell.id = `operation_cell_${i}`; 
     }
 
@@ -52,17 +53,22 @@ function setupTable(rows, columns, term_lengths) {
 
             let amp_cell = terms_row.insertCell();
             amp_cell.id = `cell_${i}_${j}_amp`;
+            amp_cell.className = "amplitude";
             arrow_cells_width += 1;
 
             for (let k = 0; k < term_lengths[j]; ++k) {
                 let bra_cell = terms_row.insertCell();
                 bra_cell.innerHTML = "$|$";
+                bra_cell.classList.add("braket");
+                bra_cell.classList.add(`braket_${i}_${j}`);
 
                 let terms_cell = terms_row.insertCell();
                 terms_cell.id = `cell_${i}_${j}_${k}`;
 
                 let ket_cell = terms_row.insertCell();
                 ket_cell.innerHTML = "$\\rangle$";
+                ket_cell.classList.add("braket");
+                ket_cell.classList.add(`braket_${i}_${j}`);
 
                 if (i == 0) {
                     arrow_cells_width += 3;
@@ -84,9 +90,7 @@ function setupTable(rows, columns, term_lengths) {
 }
 
 
-function printTable(text) {
-    let json = JSON.parse(text);
-    
+function printTable(json) {
     let table = setupTable(json.rows, json.columns, json.term_lengths);
 
     table.querySelector("#title_cell").innerHTML = `$\\text{${json.title}}$`;
@@ -133,26 +137,38 @@ function printTable(text) {
             if (overset) {
                 val_cell.classList.add("overset");
             }
+
+            for (let elem of table.querySelectorAll(`td.braket_${row}_${col}`)) {
+                elem.classList.add("visible");
+            }
         }
 
+    }
+
+    let operations = json.operations;
+    for (let op of operations) {
+        let col = op.col;
+        let text = op.text;
+
+        let cell = table.querySelector(`#operation_cell_${col}`);
+        cell.innerHTML = `$ ${text} $`;
     }
 
     document.body.append(table);
 }
 
-function drawArrows(text) {
-    const cell_height = 50;
-    const cell_offset = 30;
+function drawArrows(json) {
+    const cell_height = 41;
 
-    let json = JSON.parse(text);
     let arrows = json.arrows;
+    let columns = json.columns;
 
     for (let i = 0; i < arrows.length; ++i) {
         let script_text = "\\begin{tikzpicture}\n";
 
         for (let [s, e] of arrows[i]) {
-            let begin_y = s * cell_height + cell_offset;
-            let end_y = e * cell_height + cell_offset;
+            let begin_y = (columns - s - 1) * cell_height;
+            let end_y = (columns - e - 1) * cell_height;
 
             script_text += `\\draw [thick, dotted, ->] (0pt, ${begin_y}pt) -- (30pt, ${end_y}pt);\n`;
         }
@@ -180,17 +196,26 @@ function drawArrows(text) {
     `;
     time_arrow_cell.append(time_arrow_script);
     //process_tikz(time_arrow_script);
-
 }
 
-fetch("/qgantt/test.json")
-    .then(response => response.text())
-    .then(text => {
-        printTable(text);
-        return text;
-    })
-    .then(text => {
-        MathJax.typeset();
-        return text;
-    })
-    .then((text) => drawArrows(text));
+async function run() {
+    try {
+        // Fetch the JSON file
+        const response = await fetch("/qgantt/test.json");
+        const text = await response.text();
+        const json = JSON.parse(text);
+    
+        printTable(json);
+    
+        // Wait for MathJax to finish typesetting
+        await MathJax.typesetPromise();
+    
+        // Draw arrows after everything else is done
+        drawArrows(json);
+      
+    } catch (error) {
+      console.error("Error fetching or processing data:", error);
+    }
+}
+
+run();

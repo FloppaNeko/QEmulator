@@ -63,7 +63,7 @@ public class TestServer {
         });
 
         server.createContext("/qgantt/tikzjax.js", exchange -> {
-            String response = Files.readString(Path.of("src/main/java/org/example/qgantt/tikzjax.js"));
+            String response = Files.readString(Path.of("src/main/javascript/tikzjax.js"));
             exchange.sendResponseHeaders(200, response.getBytes().length);
             exchange.getResponseHeaders().set("Content-Type", "application/javascript");
             OutputStream os = exchange.getResponseBody();

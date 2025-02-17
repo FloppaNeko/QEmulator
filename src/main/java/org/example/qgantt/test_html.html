@@ -21,22 +21,57 @@
     </script>
     <script src="/qgantt/qgantt.js"></script>
     <style>
+        /* #root_table {
+            border-radius: 7px;
+            padding: 5px;
+            border: 2px solid;
+        } */
+
         #root_table td {
             text-align: center;
             padding: 0;
         }
 
-        #root_table .overset {
+        #root_table tr.operations_row {
+            height: 20pt; 
+        }
+
+        #root_table tr.terms_row {
+            height: 40pt;
+        }
+
+        #root_table td.overset {
             position: relative;
             top: -4px; /* Moves text upward */
             height: 40pt;
         }
+
+        /* #root_table td.amplitude {
+            position: relative;
+            top: 2px; 
+        } */
+
+        #root_table td#title_cell {
+            background-color: #ffccff;
+            border-radius: 7px;
+            padding: 2px;
+            border: 2px solid;
+        }
+ 
+        #root_table td.braket {
+            visibility: hidden;
+        }
+
+        #root_table td.braket.visible {
+            visibility: visible;
+        }
     </style>
     <style>
         #root_table td.arrow_block {
+            vertical-align: top;
             width: 30pt;
             position: relative;
-            top: 1pt; /* Moves text upward */
+            top: 21pt; /* Moves text upward */
             
         }
     </style>
